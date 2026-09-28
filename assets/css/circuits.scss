@@ -583,7 +583,7 @@ a:focus-visible {
     display: block;
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    pointer-events: none; /* only the figures themselves take clicks */
   }
 
   .art {
@@ -643,4 +643,58 @@ a:focus-visible {
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--green-ink);
+}
+
+/* Margin figures: intro note and paper links */
+
+.art {
+  pointer-events: auto;
+}
+
+.art__note {
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--green);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.art__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 8px;
+
+  canvas {
+    transition: transform 0.25s ease;
+  }
+
+  &:hover canvas,
+  &:focus-visible canvas {
+    transform: translateY(-3px);
+  }
+
+  &:hover .art__title,
+  &:focus-visible .art__title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:hover .art__cite,
+  &:focus-visible .art__cite {
+    color: var(--green-ink);
+  }
+}
+
+.art__cite {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--faint);
+  transition: color 0.2s ease;
 }
