@@ -20,11 +20,13 @@ Before my PhD I spent four years as a freelance software developer (Go, Java, C+
 
 News
 ======
-- **Sep 2026**: *Diagnosing LLM Fragility* accepted at **EMNLP 2026** (main conference), Budapest.
-- **May 2026**: Started a research visit at **NTU Singapore** with Erik Cambria (until Dec 2026).
-- **Nov 2025**: Two papers at **EMNLP 2025**: role vectors (Findings) and SFAL (Industry Track).
-- **Apr 2025**: *ITALIC* presented at **NAACL 2025**.
+<ul class="news">
+  <li><span class="news__date">Sep 2026</span><span><em>Diagnosing LLM Fragility</em> accepted at <strong>EMNLP 2026</strong> (main conference), Budapest.</span></li>
+  <li><span class="news__date">May 2026</span><span>Started a research visit at <strong>NTU Singapore</strong> with Erik Cambria (until Dec 2026).</span></li>
+  <li><span class="news__date">Nov 2025</span><span>Two papers at <strong>EMNLP 2025</strong>: role vectors (Findings) and SFAL (Industry Track).</span></li>
+  <li><span class="news__date">Apr 2025</span><span><em>ITALIC</em> presented at <strong>NAACL 2025</strong>.</span></li>
+</ul>
 
 Elsewhere
 ======
-[Google Scholar](https://scholar.google.com/citations?user=S071miUAAAAJ) · [Semantic Scholar](https://www.semanticscholar.org/author/2295992407) · [LessWrong](https://www.lesswrong.com/users/daniele-poterti-1) · [GitHub](https://github.com/danielepoterti) · [LinkedIn](https://www.linkedin.com/in/danielepoterti)
+<p class="elsewhere"><a href="https://scholar.google.com/citations?user=S071miUAAAAJ">Google Scholar</a> · <a href="https://www.semanticscholar.org/author/2295992407">Semantic Scholar</a> · <a href="https://www.lesswrong.com/users/daniele-poterti-1">LessWrong</a> · <a href="https://github.com/danielepoterti">GitHub</a> · <a href="https://www.linkedin.com/in/danielepoterti">LinkedIn</a></p>

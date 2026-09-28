@@ -13,9 +13,9 @@ $paragraph-indent           : false; // true, false (default)
 $indent-var                 : 1.3em;
 
 /* system typefaces */
-$serif                      : Georgia, Times, serif;
+$serif                      : "Source Serif 4", Georgia, Times, serif;
 $sans-serif                 : "Inter", -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
-$monospace                  : Monaco, Consolas, "Lucida Console", monospace;
+$monospace                  : "JetBrains Mono", Monaco, Consolas, "Lucida Console", monospace;
 
 /* sans serif typefaces */
 $sans-serif-narrow          : $sans-serif;
@@ -29,7 +29,7 @@ $calisto                    : "Calisto MT", serif;
 $garamond                   : Garamond, serif;
 
 $global-font-family         : $sans-serif;
-$header-font-family         : $sans-serif;
+$header-font-family         : $serif;
 $caption-font-family        : $serif;
 
 /* type scale */
@@ -61,19 +61,18 @@ $darker-gray                : mix(#000, $gray, 60%);
 $light-gray                 : mix(#fff, $gray, 50%);
 $lighter-gray               : mix(#fff, $gray, 90%);
 
-/* Holly Green theme (PANTONE 16-5932 TCX = #0F9D76) */
-$holly-green                : #0F9D76;
-$holly-green-dark           : mix(#000, $holly-green, 22%);
-$holly-green-darker         : mix(#000, $holly-green, 40%);
+/* Clean academic theme. Light values here; runtime colours (incl. dark mode)
+   are CSS custom properties defined in _academic.scss */
+$accent                     : #0b6e53;
 
-$body-color                 : $holly-green;
-$background-color           : $holly-green;
-$code-background-color      : $holly-green-dark;
-$code-background-color-dark : $holly-green-darker;
-$text-color                 : #fff;
-$border-color               : rgba(255, 255, 255, 0.35);
+$body-color                 : #fbfaf7;
+$background-color           : #fbfaf7;
+$code-background-color      : #f2f0eb;
+$code-background-color-dark : #e6e3dc;
+$text-color                 : #1c1c1c;
+$border-color               : #e4e1da;
 
-$primary-color              : $holly-green-dark;
+$primary-color              : $accent;
 $success-color              : #62c462;
 $warning-color              : #f89406;
 $danger-color               : #ee5f5b;
@@ -107,11 +106,11 @@ $xing-color                 : #006567;
 
 
 /* links */
-$link-color                 : #fff;
-$link-color-hover           : rgba(255, 255, 255, 0.8);
-$link-color-visited         : #fff;
-$masthead-link-color        : #fff;
-$masthead-link-color-hover  : rgba(255, 255, 255, 0.8);
+$link-color                 : $accent;
+$link-color-hover           : mix(#000, $accent, 25%);
+$link-color-visited         : $accent;
+$masthead-link-color        : $text-color;
+$masthead-link-color-hover  : $accent;
 
 
 /*
