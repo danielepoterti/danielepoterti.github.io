@@ -103,7 +103,7 @@
   })();
   function steering(ctx, t) {
     var a = reduced ? 0.8 : ease(((t / 3) % 2) < 1 ? (t / 3) % 1 : 1 - (t / 3) % 1);
-    var c0 = [0.3, 0.64], v = [0.42, -0.36];
+    var c0 = [0.28, 0.68], v = [0.44, -0.3];
     var X = function (x) { return 10 + x * (W - 20); };
     var Y = function (y) { return 6 + y * (H - 26); };
 
@@ -129,43 +129,74 @@
     });
     ctx.globalAlpha = 1;
     arrow(ctx, X(c0[0]), Y(c0[1]), X(c0[0] + a * v[0]), Y(c0[1] + a * v[1]), C.ink, 2);
-    label(ctx, "h + α·v", X(c0[0] + v[0]) - 4, Y(c0[1] + v[1]) - 6, C.ink, "right");
+    label(ctx, "h + α·v", W - 10, H - 6, C.ink, "right");
     label(ctx, "α = " + a.toFixed(2), 10, H - 6, C.faint);
   }
 
-  /* 3. Induction head: on a repeated sequence, attend to the token after
-     the previous occurrence of the current token. */
-  var seq = "ABCDEFABCDEF".split("");
-  function induction(ctx, t) {
-    var n = seq.length, s = 10, ox = (W - n * s) / 2 + 6, oy = 4;
-    var q = reduced ? n - 1 : Math.floor(t * 1.6) % (n + 3);
-    for (var i = 0; i < n; i++) {
-      for (var j = 0; j <= i; j++) {
-        var w = i >= 6 ? (j === i - 5 ? 1 : 0.04) : (j === 0 ? 0.35 : 0.06);
-        var shown = i <= q;
-        ctx.fillStyle = shown ? C.green : C.rule;
-        ctx.globalAlpha = shown ? 0.1 + 0.9 * w : 0.6;
-        ctx.fillRect(ox + j * s, oy + i * s, s - 1, s - 1);
-      }
+  /* 3. Linear probing: a linear classifier learns to read a concept off
+     the activations; its decision boundary swings into place. */
+  var probePts = (function () {
+    var r = rng(11), pts = [];
+    for (var i = 0; i < 64; i++) {
+      var cls = i % 2;
+      var cx = cls ? 0.64 : 0.36, cy = cls ? 0.38 : 0.62;
+      pts.push([cx + gauss(r) * 0.1, cy + gauss(r) * 0.1, cls]);
     }
-    ctx.globalAlpha = 1;
-    if (q < n) {
-      ctx.strokeStyle = C.text;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(ox - 0.5, oy + q * s - 0.5, (q + 1) * s, s);
-    }
-    ctx.font = "500 8.5px 'DM Sans', sans-serif";
-    ctx.textAlign = "center";
-    for (var k = 0; k < n; k++) {
-      var hot = q < n && (k === q || (q >= 6 && k === q - 5));
-      ctx.fillStyle = hot ? C.ink : C.faint;
-      ctx.fillText(seq[k], ox + k * s + s / 2 - 0.5, oy + n * s + 11);
-      ctx.save();
-      ctx.translate(ox - 7, oy + k * s + s / 2 + 3);
-      ctx.fillStyle = q === k ? C.ink : C.faint;
-      ctx.fillText(seq[k], 0, 0);
-      ctx.restore();
-    }
+    return pts;
+  })();
+  function probing(ctx, t) {
+    var cycle = 8, k = reduced ? 6 : t % cycle;
+    var X = function (x) { return 10 + x * (W - 20); };
+    var Y = function (y) { return 4 + y * (H - 26); };
+    // Optimal boundary is perpendicular to the class-mean difference.
+    var best = Math.atan2(-0.24, 0.28) + Math.PI / 2;
+    var th = best + 1.3 * Math.exp(-0.75 * k) * Math.cos(2.2 * k);
+    var nx = Math.cos(th - Math.PI / 2), ny = Math.sin(th - Math.PI / 2);
+    var mx = 0.5, my = 0.5;
+    var side = function (x, y) { return (x - mx) * nx + (y - my) * ny > 0 ? 1 : 0; };
+
+    // shade the half-plane the probe calls "class 1", inside the plot area
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(6, 2, W - 12, H - 24, 8); else ctx.rect(6, 2, W - 12, H - 24);
+    ctx.clip();
+    ctx.beginPath();
+    var d = 2, ux = Math.cos(th), uy = Math.sin(th);
+    ctx.moveTo(X(mx - ux * d), Y(my - uy * d));
+    ctx.lineTo(X(mx + ux * d), Y(my + uy * d));
+    ctx.lineTo(X(mx + ux * d + nx * d), Y(my + uy * d + ny * d));
+    ctx.lineTo(X(mx - ux * d + nx * d), Y(my - uy * d + ny * d));
+    ctx.closePath();
+    ctx.fillStyle = C.wash;
+    ctx.fill();
+    ctx.restore();
+
+    var correct = 0;
+    probePts.forEach(function (p) {
+      if (side(p[0], p[1]) === p[2]) correct++;
+      ctx.fillStyle = p[2] ? C.green : C.faint;
+      ctx.beginPath();
+      if (p[2]) ctx.arc(X(p[0]), Y(p[1]), 2.4, 0, 7);
+      else ctx.rect(X(p[0]) - 2, Y(p[1]) - 2, 4, 4);
+      ctx.fill();
+    });
+
+    ctx.strokeStyle = C.text;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(X(mx - ux * 0.62), Y(my - uy * 0.62));
+    ctx.lineTo(X(mx + ux * 0.62), Y(my + uy * 0.62));
+    ctx.stroke();
+    arrow(ctx, X(mx), Y(my), X(mx + nx * 0.16), Y(my + ny * 0.16), C.ink, 1.6);
+    label(ctx, "w", X(mx + nx * 0.16) + 4, Y(my + ny * 0.16) + 3, C.ink);
+
+    label(ctx, "probe acc " + (correct / probePts.length).toFixed(2), 10, H - 6, C.faint);
+    ctx.fillStyle = C.green;
+    ctx.beginPath(); ctx.arc(W - 78, H - 9.5, 2.6, 0, 7); ctx.fill();
+    label(ctx, "true", W - 72, H - 6, C.faint);
+    ctx.fillStyle = C.faint;
+    ctx.fillRect(W - 44, H - 12, 5, 5);
+    label(ctx, "false", W - 36, H - 6, C.faint);
   }
 
   /* 4. Superposition: as features get sparser, 5 of them share 2 dims. */
@@ -205,36 +236,70 @@
     return "rgb(" + ch(16) + "," + ch(8) + "," + ch(0) + ")";
   }
 
-  var drawers = { grokking: grokking, steering: steering, induction: induction, superposition: superposition };
-  var items = [];
+  var drawers = { grokking: grokking, steering: steering, probing: probing, superposition: superposition };
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var host = document.querySelector(".margin-art");
+  if (!host) return;
+  var figs = Array.prototype.slice.call(host.querySelectorAll(".art"));
+  var items = [];
 
-  Array.prototype.forEach.call(document.querySelectorAll("canvas[data-art]"), function (cv) {
-    var fn = drawers[cv.getAttribute("data-art")];
+  figs.forEach(function (fig) {
+    var cv = fig.querySelector("canvas[data-art]");
+    var fn = cv && drawers[cv.getAttribute("data-art")];
     if (!fn) return;
     cv.width = W * dpr;
     cv.height = H * dpr;
-    var ctx = cv.getContext("2d");
-    items.push({ cv: cv, ctx: ctx, fn: fn });
+    items.push({ fig: fig, cv: cv, ctx: cv.getContext("2d"), fn: fn, visible: false, t0: 0 });
   });
   if (!items.length) return;
 
+  // Spread the figures down the page, alternating sides (set in the HTML);
+  // drop the ones that don't fit on short pages.
+  function place() {
+    var h = host.parentNode.offsetHeight, top = 60, step = Math.max(420, (h - 400) / Math.max(1, items.length - 1));
+    items.forEach(function (it, i) {
+      var y = top + i * step;
+      it.fig.style.top = y + "px";
+      it.fig.hidden = y > h - 260;
+    });
+  }
+  place();
+  window.addEventListener("resize", place);
+  window.addEventListener("load", place);
+
   // ?art_t=<seconds> freezes the animations at that time (for previews).
   var frozen = parseFloat((location.search.match(/[?&]art_t=([\d.]+)/) || [])[1]);
-  var t0 = performance.now();
+
+  // Reveal on scroll, and restart each animation when it comes into view.
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var it = items.filter(function (x) { return x.fig === e.target; })[0];
+        if (!it) return;
+        if (e.isIntersecting && !it.visible) it.t0 = performance.now();
+        it.visible = e.isIntersecting;
+        if (e.isIntersecting) it.fig.classList.add("art--in");
+        if (reduced) draw(it, performance.now());
+      });
+    }, { rootMargin: "0px 0px -12% 0px" });
+    items.forEach(function (it) { io.observe(it.fig); });
+  } else {
+    items.forEach(function (it) { it.visible = true; it.fig.classList.add("art--in"); });
+  }
+
+  function draw(it, now) {
+    var t = isNaN(frozen) ? (now - it.t0) / 1000 : frozen;
+    it.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    it.ctx.clearRect(0, 0, W, H);
+    it.fn(it.ctx, t);
+  }
+
   function frame(now) {
-    var t = isNaN(frozen) ? (now - t0) / 1000 : frozen;
     items.forEach(function (it) {
-      if (!it.cv.getClientRects().length) return; // hidden (narrow screen): skip work
-      it.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      it.ctx.clearRect(0, 0, W, H);
-      it.fn(it.ctx, t);
+      if (it.visible && it.cv.getClientRects().length) draw(it, now);
     });
     if (!reduced) requestAnimationFrame(frame);
   }
-  // With reduced motion only a static frame is drawn; redraw it on resize
-  // in case the rails were hidden when it was first drawn.
-  if (reduced) window.addEventListener("resize", function () { frame(performance.now()); });
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { requestAnimationFrame(frame); });
   } else {

@@ -566,37 +566,53 @@ a:focus-visible {
   }
 }
 
-/* Margin animations (wide screens only) -------------------------------- */
+/* Margin animations (wide screens only) --------------------------------
+   Figures sit in the white bands beside the content, spread down the page
+   (top set by margin-art.js), alternating sides, and fade in on scroll. */
 
-.rail {
+.margin-art {
   display: none;
 }
 
-@media (min-width: 1380px) and (min-height: 600px) {
-  .rail {
-    display: flex;
-    flex-direction: column;
-    gap: 36px;
-    position: fixed;
-    top: 120px;
-    width: 200px;
-    z-index: 0;
+@media (min-width: 1380px) {
+  .wrap {
+    position: relative;
+  }
+
+  .margin-art {
+    display: block;
+    position: absolute;
+    inset: 0;
     pointer-events: none;
   }
 
-  /* centre each rail in its white band */
-  .rail--left {
-    left: calc((100vw - 902px) / 4 - 100px);
+  .art {
+    position: absolute;
+    width: 200px;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  .rail--right {
-    right: calc((100vw - 902px) / 4 - 100px);
+  .art--in {
+    opacity: 1;
+    transform: none;
   }
 
-  .wrap,
-  .topbar {
-    position: relative;
-    z-index: 1;
+  /* centre each figure in its band: band width = (100vw - 902px) / 2 */
+  .art--left {
+    left: calc((902px - 100vw) / 4 - 100px);
+  }
+
+  .art--right {
+    right: calc((902px - 100vw) / 4 - 100px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art {
+    transition: none;
+    transform: none;
   }
 }
 
