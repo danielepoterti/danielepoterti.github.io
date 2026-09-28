@@ -16,9 +16,7 @@ I work on **understanding and evaluating large language models through their int
 - **Deception and safety**: a theory-driven approach to studying deceptive behaviour in LLMs (in progress), and LLM fragility and malicious outputs ([EMNLP 2026](/publication/2026-10-24-diagnosing-llm-fragility))
 - **LLM evaluation and benchmarks**, especially for Italian ([ITALIC, NAACL 2025](/publication/2025-04-29-italic))
 
-Before my PhD I spent four years as a freelance software developer (Go, Java, C++, Python), and today I run large-scale experiments on the [Leonardo](https://leonardo-supercomputer.cineca.eu/) supercomputer.
-
-**I'm interested in research roles in AI safety and interpretability from 2028** (London, Zurich, EU). If you work on related problems, I'd be glad to chat, feel free to [email me](mailto:daniele.poterti@gmail.com).
+Before my PhD I spent four years as a freelance software developer (Go, Java, C++, Python).
 
 News
 ======
