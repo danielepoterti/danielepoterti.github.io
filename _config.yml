@@ -12,7 +12,7 @@ title                    : "Daniele Potertì"
 title_separator          : "-"
 name                     : &name "Daniele Potertì"
 description              : &description "PhD candidate working on mechanistic interpretability and evaluation of LLMs"
-url                      : https://danielepoterti.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://daniele.poterti.com # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "danielepoterti/danielepoterti.github.io"
 
