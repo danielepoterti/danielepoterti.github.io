@@ -3,6 +3,8 @@ permalink: /
 title: "Daniele Potertì"
 layout: circuits
 hero: "Daniele Potertì"
+photo: /images/daniele-singapore.jpg
+photo_alt: "Daniele in front of Marina Bay Sands, Singapore"
 sections: [news, selected]
 redirect_from: 
   - /about/

@@ -8,6 +8,7 @@ layout: compress
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include seo.html %}
+    {% unless page.header.image %}<meta property="og:image" content="{{ site.url }}{{ site.baseurl }}/images/{{ site.og_image }}">{% endunless %}
     <link href="{{ base_path }}/feed.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">
     {% include head/custom.html %}
     <link rel="stylesheet" href="{{ base_path }}/assets/css/circuits.css">
@@ -32,6 +33,11 @@ layout: compress
         <section class="row hero">
           <div class="row__label"></div>
           <div class="row__body">
+            {% if page.photo %}
+              <figure class="hero__photo">
+                <img src="{{ base_path }}{{ page.photo }}" alt="{{ page.photo_alt | default: site.author.name }}" width="600" height="660">
+              </figure>
+            {% endif %}
             <h1 class="display">{{ page.hero }}</h1>
             <div class="lede">{{ content }}</div>
             {% include circuits/links.html %}

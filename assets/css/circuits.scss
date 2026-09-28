@@ -170,7 +170,7 @@ a:focus-visible {
 }
 
 .lede {
-  max-width: 540px;
+  max-width: none;
 
   p,
   li {
@@ -210,6 +210,34 @@ a:focus-visible {
     &:hover {
       border-bottom-color: var(--green-ink);
     }
+  }
+}
+
+/* Hero photo: floats top-right; the name and intro wrap around it */
+
+.hero__photo {
+  float: right;
+  width: 210px;
+  margin: 6px 0 18px 32px;
+  shape-outside: inset(0 round 14px);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 1px 0 var(--rule), 0 12px 28px -14px rgba(10, 116, 87, 0.45);
+  }
+}
+
+.hero .links {
+  clear: both;
+}
+
+@media (max-width: 760px) {
+  .hero__photo {
+    width: 128px;
+    margin: 4px 0 10px 18px;
   }
 }
 
