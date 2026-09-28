@@ -7,11 +7,11 @@
 # server process.
 
 # Basic Site Settings
-locale                   : "it-IT"
+locale                   : "en-US"
 title                    : "Daniele Potertì"
 title_separator          : "-"
 name                     : &name "Daniele Potertì"
-description              : &description "PhD Student in Artificial Intelligence"
+description              : &description "PhD candidate working on mechanistic interpretability and evaluation of LLMs"
 url                      : https://danielepoterti.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "danielepoterti/danielepoterti.github.io"
@@ -24,8 +24,8 @@ author:
   avatar           : "profile.png"
   name             : "Daniele Potertì"
   pronouns         : # example: "she/her"  
-  bio              : "PhD Stundent in Artificial Intelligence"
-  location         : "Milan (IT)"
+  bio              : "PhD candidate in AI · Mechanistic interpretability & LLM evaluation"
+  location         : "Milan, Italy · Visiting NTU Singapore"
   employer         : "University of Milano-Bicocca"
   uri              : # URL
   email            : "daniele.poterti@gmail.com" 
@@ -35,7 +35,7 @@ author:
   googlescholar    : "https://scholar.google.com/citations?user=S071miUAAAAJ&hl=it"
   impactstory      : # URL
   orcid            : 
-  semantic         : # URL
+  semantic         : "https://www.semanticscholar.org/author/2295992407"
   pubmed           : 
   researchgate     : # URL
 
@@ -57,7 +57,7 @@ author:
   keybase          : # Username
   instagram        : # Username
   lastfm           : # Username
-  linkedin         : # Username
+  linkedin         : "danielepoterti"
   mastodon         : # URL
   medium           : # URL
   pinterest        : # Username
@@ -75,12 +75,14 @@ author:
 
 # Publication Category - The following the list of publication categories and their headings
 publication_category:
-  books:
-    title: 'Books'
-  manuscripts:
-    title: 'Journal Articles'    
   conferences:
     title: 'Conference Papers'
+  manuscripts:
+    title: 'Journal Articles'
+  workshops:
+    title: 'Workshop Papers'
+  preprints:
+    title: 'Preprints'
 
 # Site Settings
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
