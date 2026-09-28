@@ -55,10 +55,18 @@
     ctx.fill();
   }
 
-  /* 1. Grokking: train accuracy saturates early, test accuracy jumps late. */
+  /* 1. Grokking: train accuracy saturates early, test accuracy jumps late.
+     Below, token embeddings of a modular-addition model go from a random
+     tangle to a circle (Fourier features) as the model generalises. */
+  var P = 13, FREQ = 5;
+  var grokInit = (function () {
+    var r = rng(3), pts = [];
+    for (var k = 0; k < P; k++) pts.push([r() * 2 - 1, r() * 2 - 1, r() * 6.28]);
+    return pts;
+  })();
   function grokking(ctx, t) {
-    var L = 22, R = W - 10, T = 14, B = H - 24;
-    var cycle = 7, p = Math.min(1, (t % cycle) / 5);
+    var L = 22, R = W - 10, T = 14, B = 150 - 24;
+    var cycle = 8, p = Math.min(1, (t % cycle) / 5.5);
     if (reduced) p = 1;
     var train = function (x) { return 0.02 + 0.97 * sigmoid((x - 0.28) * 20); };
     var test = function (x) { return 0.04 + 0.93 * sigmoid((x - 0.76) * 26); };
@@ -93,6 +101,52 @@
     });
     if (p > 0.55) label(ctx, "train", X(0.52), Y(1) + 12, C.text);
     if (p > 0.9) label(ctx, "test", X(0.8), Y(0.62), C.ink);
+
+    // Representation panel, driven by how far test accuracy has risen.
+    var g = Math.max(0, Math.min(1, (test(p) - 0.04) / 0.93));
+    var top = 162, cx = W / 2 + 30, cy = top + 44, rad = 36;
+    ctx.strokeStyle = C.rule;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(L, top - 6); ctx.lineTo(R, top - 6);
+    ctx.stroke();
+    label(ctx, "token embeddings", L - 12, top + 8, C.faint);
+    label(ctx, g < 0.5 ? "memorising" : "Fourier circle", L - 12, top + 21, g < 0.5 ? C.faint : C.ink);
+    label(ctx, "a + b mod " + P, L - 12, top + 84, C.faint);
+
+    ctx.globalAlpha = 0.25 + 0.75 * g;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad, 0, 7);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+
+    var pos = [];
+    for (var k = 0; k < P; k++) {
+      var q = grokInit[k], wob = (1 - g) * 3;
+      var ix = cx + q[0] * rad * 1.05 + Math.cos(t * 1.3 + q[2]) * wob;
+      var iy = cy + q[1] * rad * 1.05 + Math.sin(t * 1.1 + q[2]) * wob;
+      var ang = 2 * Math.PI * ((k * FREQ) % P) / P - Math.PI / 2;
+      pos.push([lerp(ix, cx + Math.cos(ang) * rad, g), lerp(iy, cy + Math.sin(ang) * rad, g)]);
+    }
+    // consecutive tokens k -> k+1: a tangle before, a clean star after
+    ctx.strokeStyle = mix(C.faint, C.green, g);
+    ctx.globalAlpha = 0.45;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var j = 0; j <= P; j++) {
+      var pt = pos[j % P];
+      if (j === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    pos.forEach(function (pt, k) {
+      ctx.fillStyle = mix(C.rule, C.ink, 0.35 + 0.65 * k / (P - 1));
+      ctx.beginPath();
+      ctx.arc(pt[0], pt[1], 3, 0, 7);
+      ctx.fill();
+    });
   }
 
   /* 2. Steering: shift a cluster of activations along a direction v. */
@@ -247,9 +301,11 @@
     var cv = fig.querySelector("canvas[data-art]");
     var fn = cv && drawers[cv.getAttribute("data-art")];
     if (!fn) return;
+    var h = parseInt(cv.getAttribute("data-h"), 10) || H;
     cv.width = W * dpr;
-    cv.height = H * dpr;
-    items.push({ fig: fig, cv: cv, ctx: cv.getContext("2d"), fn: fn, visible: false, t0: 0 });
+    cv.height = h * dpr;
+    cv.style.height = h + "px";
+    items.push({ fig: fig, cv: cv, ctx: cv.getContext("2d"), fn: fn, h: h, visible: false, t0: 0 });
   });
   if (!items.length) return;
 
@@ -290,7 +346,7 @@
   function draw(it, now) {
     var t = isNaN(frozen) ? (now - it.t0) / 1000 : frozen;
     it.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    it.ctx.clearRect(0, 0, W, H);
+    it.ctx.clearRect(0, 0, W, it.h);
     it.fn(it.ctx, t);
   }
 
