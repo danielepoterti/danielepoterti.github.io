@@ -35,5 +35,4 @@ Skills
 
 Publications
 ======
-<p><em>My group lists authors alphabetically on several papers; I am the lead author on most of the papers below.</em></p>
-<ul class="cv-pubs">{% for post in site.publications reversed %}<li><a href="{{ post.url }}">{{ post.title }}</a><br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}</li>{% endfor %}</ul>
+<ul class="cv-pubs">{% for post in site.publications reversed %}<li><a href="{{ post.url }}">{{ post.title }}</a><br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}{% if post.alphabetical %}<br><span class="alpha-note">Authors in alphabetical order; I contributed to the technical work.</span>{% endif %}</li>{% endfor %}</ul>

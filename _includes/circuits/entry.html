@@ -6,12 +6,14 @@
     {% if p.featured %}
       <h2 class="entry__title"><a href="{{ href }}">{{ p.title }}</a></h2>
       {% include circuits/authors.html authors=p.authors %}
+      {% include circuits/alpha-note.html post=p %}
       <p class="entry__desc">{{ p.excerpt | strip_html | strip }}</p>
       <p class="entry__meta"><span class="entry__venue">{{ p.venue }}</span>
         {% if p.paperurl %}<a href="{{ p.paperurl }}">Paper ↗</a>{% endif %}
         <a href="{{ base_path }}{{ p.url }}">Cite</a></p>
     {% else %}
       <p class="entry__inline"><a class="entry__inline-title" href="{{ href }}">{{ p.title }}</a> <span class="entry__desc">{{ p.excerpt | strip_html | strip }}</span> <span class="entry__venue">{{ p.venue }}</span></p>
+      {% include circuits/alpha-note.html post=p %}
     {% endif %}
   </div>
 </article>

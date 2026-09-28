@@ -52,6 +52,7 @@ layout: compress
             <h1 class="display display--page">{{ page.title }}</h1>
             {% if page.collection == 'publications' %}
               {% include circuits/authors.html authors=page.authors %}
+              {% include circuits/alpha-note.html post=page %}
               <p class="entry__venue">{{ page.venue }}</p>
               {% if page.paperurl %}<p class="entry__links"><a href="{{ page.paperurl }}">Paper ↗</a></p>{% endif %}
             {% endif %}

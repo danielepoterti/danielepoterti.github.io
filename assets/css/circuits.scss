@@ -726,3 +726,25 @@ a:focus-visible {
   color: var(--faint);
   transition: color 0.2s ease;
 }
+
+/* Note on papers whose authors are listed alphabetically */
+
+.alpha-note {
+  display: inline-block;
+  margin: 0 0 0.7em;
+  padding: 2px 9px;
+  font-family: var(--display);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--green-ink);
+  background: var(--green-wash);
+  border-radius: 999px;
+}
+
+.entry__inline + .alpha-note {
+  margin: 0.45em 0 0;
+}
+
+.cv-pubs .alpha-note {
+  margin: 0.35em 0 0;
+}

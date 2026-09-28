@@ -9,6 +9,7 @@ venue: "Proceedings of CLiC-it 2024"
 paperurl: 'https://aclanthology.org/2024.clicit-1.135/'
 citation: 'Fabio Mercorio, Daniele Potertì, Antonio Serino, Andrea Seveso. (2024). &quot;BEEP - BEst DrivEr’s License Performer: A CALAMITA Challenge.&quot; <i>CLiC-it 2024</i>.'
 authors: "Fabio Mercorio, Daniele Potertì, Antonio Serino, Andrea Seveso"
+alphabetical: true
 ---
 
 [Paper](https://aclanthology.org/2024.clicit-1.135/)
