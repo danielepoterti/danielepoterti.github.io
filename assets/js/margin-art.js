@@ -6,6 +6,7 @@
     green: "#0f9d76",
     ink: "#0a7457",
     text: "#16181a",
+    muted: "#4e5552",
     faint: "#8a918e",
     rule: "#e2ebe7",
     wash: "#e8f5f0"
@@ -149,14 +150,30 @@
     });
   }
 
-  /* 2. Steering: shift a cluster of activations along a direction v. */
+  /* 2. Steering: shift a cluster of activations along a direction v, and
+     show what that does to a generation (a love - hate vector, as in the
+     ActAdd paper). The continuations are illustrative, not model outputs. */
+  var steerText = {
+    base: "you never listen to me.",
+    weak: "you never listen to me.",
+    mid: "you never… well, you try.",
+    strong: "you make me feel so loved."
+  };
+  // alpha over an 8 s loop: hold at 0, ramp up, hold at 1, ramp down
+  function steerAlpha(t) {
+    var k = t % 8;
+    if (k < 1) return 0;
+    if (k < 3.5) return ease((k - 1) / 2.5);
+    if (k < 5.5) return 1;
+    return 1 - ease((k - 5.5) / 2.5);
+  }
   var steerPts = (function () {
     var r = rng(7), pts = [];
     for (var i = 0; i < 46; i++) pts.push([gauss(r) * 0.075, gauss(r) * 0.075]);
     return pts;
   })();
   function steering(ctx, t) {
-    var a = reduced ? 0.8 : ease(((t / 3) % 2) < 1 ? (t / 3) % 1 : 1 - (t / 3) % 1);
+    var a = reduced ? 1 : steerAlpha(t);
     var c0 = [0.28, 0.68], v = [0.44, -0.3];
     var X = function (x) { return 10 + x * (W - 20); };
     var Y = function (y) { return 6 + y * (H - 26); };
@@ -185,6 +202,30 @@
     arrow(ctx, X(c0[0]), Y(c0[1]), X(c0[0] + a * v[0]), Y(c0[1] + a * v[1]), C.ink, 2);
     label(ctx, "h + α·v", W - 10, H - 6, C.ink, "right");
     label(ctx, "α = " + a.toFixed(2), 10, H - 6, C.faint);
+
+    // Generation panel
+    var top = 162, lx = 10;
+    ctx.strokeStyle = C.rule;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(lx, top - 6); ctx.lineTo(W - 10, top - 6);
+    ctx.stroke();
+    label(ctx, "prompt", lx, top + 8, C.faint);
+    ctx.fillStyle = C.text;
+    ctx.font = "italic 11.5px 'Source Serif 4', serif";
+    ctx.textAlign = "left";
+    ctx.fillText("“I hate you because…”", lx, top + 22);
+
+    label(ctx, "unsteered", lx, top + 42, C.faint);
+    ctx.fillStyle = C.muted || "#4e5552";
+    ctx.font = "11.5px 'Source Serif 4', serif";
+    ctx.fillText(steerText.base, lx, top + 56);
+
+    var out = a < 0.3 ? steerText.weak : a < 0.75 ? steerText.mid : steerText.strong;
+    label(ctx, "steered  + α·(love − hate)", lx, top + 76, C.ink);
+    ctx.fillStyle = mix(C.faint, C.ink, Math.min(1, a * 1.3));
+    ctx.font = (a >= 0.75 ? "600 " : "") + "11.5px 'Source Serif 4', serif";
+    ctx.fillText(out, lx, top + 90);
   }
 
   /* 3. Linear probing: a linear classifier learns to read a concept off
