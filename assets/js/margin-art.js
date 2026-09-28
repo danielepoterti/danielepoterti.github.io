@@ -332,6 +332,11 @@
   }
 
   var drawers = { grokking: grokking, steering: steering, probing: probing, superposition: superposition };
+  // Every drawer loops with period LOOP seconds; FINAL[name] is the time of
+  // the frame that best shows the idea (grokked, fully steered, converged
+  // probe, pentagon). Figures play once up to it, then rest there.
+  var LOOP = 8;
+  var FINAL = { grokking: 6, steering: 4.5, probing: 7.9, superposition: 4 };
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var host = document.querySelector(".margin-art");
   if (!host) return;
@@ -346,7 +351,9 @@
     cv.width = W * dpr;
     cv.height = h * dpr;
     cv.style.height = h + "px";
-    items.push({ fig: fig, cv: cv, ctx: cv.getContext("2d"), fn: fn, h: h, visible: false, t0: 0 });
+    var name = cv.getAttribute("data-art");
+    items.push({ fig: fig, cv: cv, ctx: cv.getContext("2d"), fn: fn, h: h, final: FINAL[name],
+      visible: false, mode: "idle", t0: 0, stopAt: 0, drawnT: null });
   });
   if (!items.length) return;
 
@@ -367,35 +374,73 @@
   // ?art_t=<seconds> freezes the animations at that time (for previews).
   var frozen = parseFloat((location.search.match(/[?&]art_t=([\d.]+)/) || [])[1]);
 
-  // Reveal on scroll, and restart each animation when it comes into view.
+  // Modes: "idle" (not yet seen) -> "once" (plays up to its final frame on
+  // first reveal) -> "rest" (static final frame). Hover switches to "loop";
+  // leaving finishes the current cycle ("settle") and rests again.
+  function start(it, mode) {
+    it.mode = mode;
+    it.t0 = performance.now();
+  }
+  function elapsed(it, now) { return (now - it.t0) / 1000; }
+
+  function currentT(it, now) {
+    if (!isNaN(frozen)) return frozen;
+    if (reduced || it.mode === "rest" || it.mode === "idle") return it.final;
+    var t = elapsed(it, now);
+    if (it.mode === "once" && t >= it.final) { it.mode = "rest"; return it.final; }
+    if (it.mode === "settle" && t >= it.stopAt) { it.mode = "rest"; return it.final; }
+    return t;
+  }
+
+  items.forEach(function (it) {
+    if (reduced) return;
+    it.fig.addEventListener("mouseenter", function () {
+      // resume from the resting frame rather than jumping back to t = 0
+      var from = it.mode === "rest" ? it.final : elapsed(it, performance.now());
+      it.mode = "loop";
+      it.t0 = performance.now() - from * 1000;
+    });
+    it.fig.addEventListener("mouseleave", function () {
+      if (it.mode !== "loop") return;
+      var t = elapsed(it, performance.now());
+      // next moment in the loop that shows the final frame
+      it.stopAt = it.final + Math.ceil((t - it.final) / LOOP) * LOOP;
+      it.mode = "settle";
+    });
+  });
+
+  // Reveal on scroll; the first reveal plays the animation once.
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var it = items.filter(function (x) { return x.fig === e.target; })[0];
         if (!it) return;
-        if (e.isIntersecting && !it.visible) it.t0 = performance.now();
         it.visible = e.isIntersecting;
-        if (e.isIntersecting) it.fig.classList.add("art--in");
-        if (reduced) draw(it, performance.now());
+        if (e.isIntersecting && it.mode === "idle") {
+          it.fig.classList.add("art--in");
+          start(it, "once");
+        }
       });
     }, { rootMargin: "0px 0px -12% 0px" });
     items.forEach(function (it) { io.observe(it.fig); });
   } else {
-    items.forEach(function (it) { it.visible = true; it.fig.classList.add("art--in"); });
+    items.forEach(function (it) { it.visible = true; it.fig.classList.add("art--in"); start(it, "once"); });
   }
 
-  function draw(it, now) {
-    var t = isNaN(frozen) ? (now - it.t0) / 1000 : frozen;
+  function draw(it, t) {
     it.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     it.ctx.clearRect(0, 0, W, it.h);
     it.fn(it.ctx, t);
+    it.drawnT = t;
   }
 
   function frame(now) {
     items.forEach(function (it) {
-      if (it.visible && it.cv.getClientRects().length) draw(it, now);
+      if (!it.visible || !it.cv.getClientRects().length) return;
+      var t = currentT(it, now);
+      if (t !== it.drawnT) draw(it, t); // static frames are drawn once
     });
-    if (!reduced) requestAnimationFrame(frame);
+    requestAnimationFrame(frame);
   }
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { requestAnimationFrame(frame); });
