@@ -6,6 +6,7 @@ hero: "Daniele Potertì"
 photo: /images/daniele-singapore.jpg
 photo_alt: "Daniele in front of Marina Bay Sands, Singapore"
 sections: [news, selected]
+margin_art: true  # side animations: home page only
 redirect_from: 
   - /about/
   - /about.html

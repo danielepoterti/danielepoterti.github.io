@@ -28,7 +28,7 @@ layout: compress
     </header>
 
     <main class="wrap">
-      {% include circuits/margin-art.html %}
+      {% if page.margin_art %}{% include circuits/margin-art.html %}{% endif %}
       {% if page.hero %}
         <section class="row hero">
           <div class="row__label"></div>
@@ -85,6 +85,6 @@ layout: compress
         </div>
       </div>
     </footer>
-    <script src="{{ base_path }}/assets/js/margin-art.js" defer></script>
+    {% if page.margin_art %}<script src="{{ base_path }}/assets/js/margin-art.js" defer></script>{% endif %}
   </body>
 </html>
