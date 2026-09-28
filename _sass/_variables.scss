@@ -14,7 +14,7 @@ $indent-var                 : 1.3em;
 
 /* system typefaces */
 $serif                      : Georgia, Times, serif;
-$sans-serif                 : -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+$sans-serif                 : "Inter", -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
 $monospace                  : Monaco, Consolas, "Lucida Console", monospace;
 
 /* sans serif typefaces */
@@ -61,14 +61,19 @@ $darker-gray                : mix(#000, $gray, 60%);
 $light-gray                 : mix(#fff, $gray, 50%);
 $lighter-gray               : mix(#fff, $gray, 90%);
 
-$body-color                 : #fff;
-$background-color           : #fff;
-$code-background-color      : #fafafa;
-$code-background-color-dark : $light-gray;
-$text-color                 : $dark-gray;
-$border-color               : $lighter-gray;
+/* Holly Green theme (PANTONE 16-5932 TCX = #0F9D76) */
+$holly-green                : #0F9D76;
+$holly-green-dark           : mix(#000, $holly-green, 22%);
+$holly-green-darker         : mix(#000, $holly-green, 40%);
 
-$primary-color              : #7a8288;
+$body-color                 : $holly-green;
+$background-color           : $holly-green;
+$code-background-color      : $holly-green-dark;
+$code-background-color-dark : $holly-green-darker;
+$text-color                 : #fff;
+$border-color               : rgba(255, 255, 255, 0.35);
+
+$primary-color              : $holly-green-dark;
 $success-color              : #62c462;
 $warning-color              : #f89406;
 $danger-color               : #ee5f5b;
@@ -102,11 +107,11 @@ $xing-color                 : #006567;
 
 
 /* links */
-$link-color                 : $info-color;
-$link-color-hover           : mix(#000, $link-color, 25%);
-$link-color-visited         : mix(#fff, $link-color, 25%);
-$masthead-link-color        : $primary-color;
-$masthead-link-color-hover  : mix(#000, $primary-color, 25%);
+$link-color                 : #fff;
+$link-color-hover           : rgba(255, 255, 255, 0.8);
+$link-color-visited         : #fff;
+$masthead-link-color        : #fff;
+$masthead-link-color-hover  : rgba(255, 255, 255, 0.8);
 
 
 /*

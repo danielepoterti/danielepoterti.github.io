@@ -1,0 +1,165 @@
+/* ==========================================================================
+   HOLLY GREEN THEME OVERRIDES (PANTONE 16-5932 TCX = #0F9D76, white text)
+   Loaded last to override components that hard-code white backgrounds.
+   ========================================================================== */
+
+html,
+body {
+  background-color: $holly-green;
+  color: #fff;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #fff;
+  color: $holly-green-darker;
+}
+
+/* Header bar */
+.masthead {
+  background: $holly-green-dark;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.greedy-nav {
+  background: transparent;
+
+  a {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .visible-links a:before {
+    background: #fff;
+  }
+
+  button {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .hidden-links {
+    background: $holly-green-dark;
+    border-color: rgba(255, 255, 255, 0.25);
+
+    &:after {
+      border-color: $holly-green-dark transparent;
+    }
+
+    a:hover {
+      color: $holly-green-darker;
+      background: #fff;
+    }
+  }
+}
+
+/* Text and links */
+h1, h2, h3, h4, h5, h6,
+.page__title,
+.archive__item-title,
+.archive__subtitle {
+  color: #fff;
+}
+
+a,
+a:visited {
+  color: #fff;
+}
+
+.page__content,
+.archive {
+  a {
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.5);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s ease;
+
+    &:hover {
+      color: #fff;
+      text-decoration-color: #fff;
+    }
+  }
+}
+
+.archive__item-title a {
+  text-decoration: none;
+}
+
+.page__meta,
+.page__date,
+.archive__item-excerpt,
+.archive p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+hr {
+  border-top-color: rgba(255, 255, 255, 0.35);
+}
+
+blockquote {
+  border-left-color: #fff;
+}
+
+code,
+pre,
+.highlight {
+  color: #fff;
+  background: $holly-green-dark;
+}
+
+/* Sidebar / author profile */
+.author__avatar img {
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.author__name,
+.author__bio,
+.author__urls,
+.author__urls a {
+  color: #fff;
+}
+
+.author__urls-wrapper button {
+  color: #fff;
+  background-color: $holly-green-dark;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.author__urls {
+  background: $holly-green-dark;
+  border-color: rgba(255, 255, 255, 0.25);
+
+  &:after {
+    border-color: $holly-green-dark transparent;
+  }
+
+  @include breakpoint($large) {
+    background: transparent;
+  }
+}
+
+/* Buttons */
+.btn {
+  color: $holly-green-darker !important;
+  background-color: #fff;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+/* Footer */
+.page__footer {
+  color: rgba(255, 255, 255, 0.85);
+  background-color: $holly-green-darker;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+  a {
+    color: #fff;
+  }
+}
