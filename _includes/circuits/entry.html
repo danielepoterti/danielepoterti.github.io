@@ -1,18 +1,16 @@
 {% assign p = include.post %}
-{% if p.paperurl %}{% assign href = p.paperurl %}{% else %}{% assign href = p.url | prepend: base_path %}{% endif %}
 <article class="row entry{% if p.featured %} entry--featured{% endif %}{% if include.same_month %} entry--same{% endif %}">
   <div class="row__label">{% unless include.same_month %}{{ p.date | date: "%B %Y" }}{% endunless %}</div>
   <div class="row__body">
     {% if p.featured %}
-      <h2 class="entry__title"><a href="{{ href }}">{{ p.title }}</a></h2>
+      <h2 class="entry__title">{% if p.paperurl %}<a href="{{ p.paperurl }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}</h2>
       {% include circuits/authors.html authors=p.authors %}
       {% include circuits/alpha-note.html post=p %}
       <p class="entry__desc">{{ p.excerpt | strip_html | strip }}</p>
       <p class="entry__meta"><span class="entry__venue">{{ p.venue }}</span>
-        {% if p.paperurl %}<a href="{{ p.paperurl }}">Paper ↗</a>{% endif %}
-        <a href="{{ base_path }}{{ p.url }}">Cite</a></p>
+        {% if p.paperurl %}<a href="{{ p.paperurl }}">Paper ↗</a>{% endif %}</p>
     {% else %}
-      <p class="entry__inline"><a class="entry__inline-title" href="{{ href }}">{{ p.title }}</a> <span class="entry__desc">{{ p.excerpt | strip_html | strip }}</span> <span class="entry__venue">{{ p.venue }}</span></p>
+      <p class="entry__inline">{% if p.paperurl %}<a class="entry__inline-title" href="{{ p.paperurl }}">{{ p.title }}</a>{% else %}<span class="entry__inline-title">{{ p.title }}</span>{% endif %} <span class="entry__desc">{{ p.excerpt | strip_html | strip }}</span> <span class="entry__venue">{{ p.venue }}</span></p>
       {% include circuits/alpha-note.html post=p %}
     {% endif %}
   </div>

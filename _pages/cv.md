@@ -35,4 +35,4 @@ Skills
 
 Publications
 ======
-<ul class="cv-pubs">{% for post in site.publications reversed %}<li><a href="{{ post.url }}">{{ post.title }}</a><br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}{% if post.alphabetical %}<br><span class="alpha-note">Authors in alphabetical order; I contributed to the technical work.</span>{% endif %}</li>{% endfor %}</ul>
+<ul class="cv-pubs">{% for post in site.publications reversed %}<li>{% if post.paperurl %}<a href="{{ post.paperurl }}">{{ post.title }}</a>{% else %}<strong>{{ post.title }}</strong>{% endif %}<br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}{% if post.alphabetical %}<br><span class="alpha-note">Authors in alphabetical order; I contributed to the technical work.</span>{% endif %}</li>{% endfor %}</ul>

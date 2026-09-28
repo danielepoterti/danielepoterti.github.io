@@ -748,3 +748,12 @@ a:focus-visible {
 .cv-pubs .alpha-note {
   margin: 0.35em 0 0;
 }
+
+/* Titles of papers without a link yet */
+span.entry__inline-title {
+  color: var(--text);
+}
+
+.cv-pubs strong:first-child {
+  font-weight: 600;
+}

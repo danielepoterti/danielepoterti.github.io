@@ -63,9 +63,6 @@ layout: compress
           {% if page.excerpt %}
             <section class="row"><div class="row__label">Summary</div><div class="row__body prose"><p>{{ page.excerpt | strip_html }}</p></div></section>
           {% endif %}
-          {% if page.citation %}
-            <section class="row"><div class="row__label">Cite</div><div class="row__body"><p class="citation">{{ page.citation }}</p></div></section>
-          {% endif %}
         {% else %}
           <div class="prose prose--grid">{{ content }}</div>
         {% endif %}
