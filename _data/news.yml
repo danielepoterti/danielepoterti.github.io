@@ -1,0 +1,10 @@
+# News items shown on the home page timeline (newest first).
+# `text` is HTML.
+- date: 2026-09-01
+  text: "<em>Diagnosing LLM Fragility</em> accepted at <strong>EMNLP 2026</strong> (main conference), Budapest."
+- date: 2026-05-01
+  text: "Started a research visit at <strong>NTU Singapore</strong> with Erik Cambria (until Dec 2026)."
+- date: 2025-11-01
+  text: "Two papers at <strong>EMNLP 2025</strong>: role vectors (Findings) and SFAL (Industry Track)."
+- date: 2025-04-01
+  text: "<em>ITALIC</em> presented at <strong>NAACL 2025</strong>."

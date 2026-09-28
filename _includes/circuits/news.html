@@ -1,0 +1,9 @@
+<section class="section">
+  <h2 class="row section__title"><span class="row__label"></span><span class="row__body">News</span></h2>
+  {% for n in site.data.news %}
+  <div class="row news">
+    <div class="row__label">{{ n.date | date: "%B %Y" }}</div>
+    <div class="row__body"><p>{{ n.text }}</p></div>
+  </div>
+  {% endfor %}
+</section>

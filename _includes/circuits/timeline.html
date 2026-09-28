@@ -1,0 +1,10 @@
+{% include base_path %}
+{% assign pubs = site.publications | sort: "date" | reverse %}
+{% assign prev = "" %}
+{% for p in pubs %}
+  {% if include.featured_only and p.featured != true %}{% continue %}{% endif %}
+  {% assign m = p.date | date: "%B %Y" %}
+  {% if m == prev %}{% assign same = true %}{% else %}{% assign same = false %}{% endif %}
+  {% include circuits/entry.html post=p same_month=same %}
+  {% assign prev = m %}
+{% endfor %}

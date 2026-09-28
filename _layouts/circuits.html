@@ -1,0 +1,81 @@
+---
+layout: compress
+---
+{% include base_path %}
+<!doctype html>
+<html lang="{{ site.locale | slice: 0,2 }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include seo.html %}
+    <link href="{{ base_path }}/feed.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">
+    {% include head/custom.html %}
+    <link rel="stylesheet" href="{{ base_path }}/assets/css/circuits.css">
+  </head>
+
+  <body>
+    <header class="topbar">
+      <a class="topbar__home" href="{{ base_path }}/">
+        <span class="topbar__mark" aria-hidden="true">DP</span>
+        <span class="topbar__name">{{ site.title }}</span>
+      </a>
+      <nav class="topbar__nav">
+        {% for link in site.data.navigation.main %}
+          <a href="{{ base_path }}{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+    </header>
+
+    <main class="wrap">
+      {% if page.hero %}
+        <section class="row hero">
+          <div class="row__label"></div>
+          <div class="row__body">
+            <h1 class="display">{{ page.hero }}</h1>
+            <div class="lede">{{ content }}</div>
+            {% include circuits/links.html %}
+          </div>
+        </section>
+      {% else %}
+        <section class="row page-head">
+          <div class="row__label">
+            {% if page.collection == 'publications' %}{{ page.date | date: "%B %Y" }}{% endif %}
+          </div>
+          <div class="row__body">
+            <h1 class="display display--page">{{ page.title }}</h1>
+            {% if page.collection == 'publications' %}
+              {% include circuits/authors.html authors=page.authors %}
+              <p class="entry__venue">{{ page.venue }}</p>
+              {% if page.paperurl %}<p class="entry__links"><a href="{{ page.paperurl }}">Paper ↗</a></p>{% endif %}
+            {% endif %}
+          </div>
+        </section>
+
+        {% if page.collection == 'publications' %}
+          {% if page.excerpt %}
+            <section class="row"><div class="row__label">Summary</div><div class="row__body prose"><p>{{ page.excerpt | strip_html }}</p></div></section>
+          {% endif %}
+          {% if page.citation %}
+            <section class="row"><div class="row__label">Cite</div><div class="row__body"><p class="citation">{{ page.citation }}</p></div></section>
+          {% endif %}
+        {% else %}
+          <div class="prose prose--grid">{{ content }}</div>
+        {% endif %}
+      {% endif %}
+
+      {% for section in page.sections %}
+        {% include circuits/{{ section }}.html %}
+      {% endfor %}
+    </main>
+
+    <footer class="footer wrap">
+      <div class="row">
+        <div class="row__label"></div>
+        <div class="row__body">
+          <span>&copy; {{ site.time | date: '%Y' }} {{ site.name }}</span>
+          {% include circuits/links.html %}
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

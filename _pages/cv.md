@@ -1,8 +1,7 @@
 ---
-layout: archive
+layout: circuits
 title: "CV"
 permalink: /cv/
-author_profile: true
 redirect_from:
   - /resume
 ---
@@ -36,7 +35,5 @@ Skills
 
 Publications
 ======
-<p><em>Note: my group lists authors alphabetically on several papers; I am the lead author on most of the papers below.</em></p>
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
+<p><em>My group lists authors alphabetically on several papers; I am the lead author on most of the papers below.</em></p>
+<ul class="cv-pubs">{% for post in site.publications reversed %}<li><a href="{{ post.url }}">{{ post.title }}</a><br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}</li>{% endfor %}</ul>
