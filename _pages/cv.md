@@ -1,40 +1,15 @@
 ---
-layout: circuits
-title: "CV"
+layout: null
 permalink: /cv/
-redirect_from:
-  - /resume
+sitemap: false
 ---
-
-{% include base_path %}
-
-<p class="links"><a href="{{ base_path }}/files/CV_Daniele_Poterti.pdf">Download CV (PDF)</a></p>
-
-Education
-======
-* **Ph.D. in Artificial Intelligence**, University of Milano-Bicocca, 2023–2028 (expected: March 2028)
-  * Curriculum: Big Data & Analytics for Business · Supervisor: Fabio Mercorio
-  * Visiting PhD student, Nanyang Technological University (NTU) Singapore, May–Dec 2026 (host: Erik Cambria)
-* **M.Sc. in Data Science**, University of Milano-Bicocca, 2021–2023
-* **B.Sc. in Computer Science**, University of Milano-Bicocca, 2018–2021
-
-Research interests
-======
-* Mechanistic interpretability: activation steering, role vectors, sparse autoencoders
-* Evaluation of LLMs and of interpretability methods
-* Deception, fragility and safety of LLMs
-
-Experience
-======
-* **2023–present**: PhD researcher, University of Milano-Bicocca (CRISP research centre)
-* **2019–2023**: Freelance software developer (Go, Java, C++, Python)
-
-Skills
-======
-* Python, PyTorch, Hugging Face; large-scale experiments on HPC (Leonardo, CINECA/EuroHPC)
-* Go, Java, C++
-* Languages: Italian (native), English
-
-Publications
-======
-<ul class="cv-pubs">{% for post in site.publications reversed %}<li>{% if post.paperurl %}<a href="{{ post.paperurl }}">{{ post.title }}</a>{% else %}<strong>{{ post.title }}</strong>{% endif %}<br>{{ post.authors | replace: "Daniele Potertì", "<strong>Daniele Potertì</strong>" }} · <em>{{ post.venue }}</em>, {{ post.date | date: "%Y" }}{% if post.alphabetical %}<br><span class="alpha-note">Authors in alphabetical order; I contributed to the technical work.</span>{% endif %}</li>{% endfor %}</ul>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CV · Daniele Potertì</title>
+  <meta http-equiv="refresh" content="0; url=/files/CV_Daniele_Poterti.pdf">
+  <link rel="canonical" href="/files/CV_Daniele_Poterti.pdf">
+</head>
+<body><p><a href="/files/CV_Daniele_Poterti.pdf">Open the CV (PDF)</a></p></body>
+</html>
