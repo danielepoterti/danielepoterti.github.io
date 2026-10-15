@@ -8,6 +8,8 @@ redirect_from:
 
 {% include base_path %}
 
+<p class="links"><a href="{{ base_path }}/files/CV_Daniele_Poterti.pdf">Download CV (PDF)</a></p>
+
 Education
 ======
 * **Ph.D. in Artificial Intelligence**, University of Milano-Bicocca, 2023–2028 (expected: March 2028)
