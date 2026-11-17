@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <title>Per Aurora</title>
-<meta property="og:title" content="Per te, Aurora">
+<meta property="og:title" content="Per te Aurora">
 <meta property="og:description" content="Un mazzo di rose, scritto in codice.">
 <style>
   :root {
@@ -40,7 +40,7 @@
 <body>
 <div id="app">
   <section id="stage">
-    <canvas id="grid" role="img" aria-label="Un mazzo di rose fatto di lettere che sboccia, con un biglietto: per te, Aurora. Buona laurea, dottoressa."></canvas>
+    <canvas id="grid" role="img" aria-label="Un mazzo di rose fatto di lettere che sboccia, con un biglietto: per te Aurora, buona laurea dottoressa."></canvas>
     <canvas id="glow"></canvas>
     <div id="note" aria-hidden="true"></div>
     <button id="again" type="button">[ RIVEDI ]</button>
@@ -526,7 +526,7 @@ function stars(t) {
 // ── il biglietto ───────────────────────────────────────────────────────
 // scritto sotto il mazzo, una decina di lettere al secondo;
 // più grande della griglia, quindi è testo vero, appoggiato sopra
-const MESSAGE = ['per te, aurora <3', 'buona laurea, dottoressa'];
+const MESSAGE = ['per te aurora <3', 'buona laurea dottoressa'];
 const TYPE_SPEED = 11, LINE_PAUSE = 0.6, BREAK_PAUSE = 0.25;
 const NOTE_LINE_H = 1.7, NOTE_MIN = 18, NOTE_MAX = 26;
 const note = document.getElementById('note');
