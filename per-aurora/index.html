@@ -21,8 +21,7 @@
   #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; touch-action: manipulation; }
   #grid { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   #glow { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; opacity: .55; filter: blur(5px) saturate(1.3); }
-  #note { position: absolute; left: 0; right: 0; text-align: center; font-weight: 700; line-height: 2; white-space: pre; pointer-events: none; }
-  #note .line { padding-left: .45em; }
+  #note { position: absolute; left: 0; right: 0; text-align: center; font-weight: 700; line-height: 1.7; white-space: pre; pointer-events: none; }
   #note .l0 { color: #f4f4f5; text-shadow: 0 0 10px rgba(244,244,245,.55); }
   #note .l1 { color: #f2c94c; text-shadow: 0 0 10px rgba(242,201,76,.55); }
   #note .heart { color: #ff4d6d; text-shadow: 0 0 10px rgba(255,77,109,.8); }
@@ -528,35 +527,62 @@ function stars(t) {
 // scritto sotto il mazzo, una decina di lettere al secondo;
 // più grande della griglia, quindi è testo vero, appoggiato sopra
 const MESSAGE = ['per te, aurora <3', 'buona laurea, dottoressa'];
-const TYPE_SPEED = 11, LINE_PAUSE = 0.6;
+const TYPE_SPEED = 11, LINE_PAUSE = 0.6, BREAK_PAUSE = 0.25;
+const NOTE_LINE_H = 1.7, NOTE_MIN = 18, NOTE_MAX = 26;
 const note = document.getElementById('note');
-const NOTE_LINES = MESSAGE.map((line, li) => {
-  const el = document.createElement('div');
-  el.className = `line l${li}`;
-  note.appendChild(el);
-  return el;
-});
-let typedShown = '';
+let LAYOUT = [], NOTE_LINES = [], typedShown = '';
+
+// spezza una riga in due, alla virgola (o allo spazio) più vicina al centro
+function halves(text) {
+  let best = -1;
+  for (const mark of [', ', ' ']) {
+    for (let k = text.indexOf(mark); k > 0; k = text.indexOf(mark, k + 1)) {
+      if (best < 0 || Math.abs(k - text.length / 2) < Math.abs(best - text.length / 2)) best = k;
+    }
+    if (best > 0) return [text.slice(0, best + mark.trimEnd().length), text.slice(best + mark.length)];
+  }
+  return [text];
+}
+
+// le righe sullo schermo: [testo, da quale riga del biglietto viene]
+function layoutNote(W, ratio) {
+  const fit = (n) => (W * 0.86) / (n * ratio * 1.5);
+  let lines = MESSAGE.map((text, li) => [text, li]);
+  for (let tries = 0; tries < 3; tries++) {
+    const longest = lines.reduce((a, b) => (b[0].length > a[0].length ? b : a));
+    if (fit(longest[0].length) >= NOTE_MIN) break;
+    lines = lines.flatMap((l) => (l === longest ? halves(l[0]).map((h) => [h, l[1]]) : [l]));
+  }
+  LAYOUT = lines;
+  note.textContent = '';
+  NOTE_LINES = LAYOUT.map(([, li]) => {
+    const el = document.createElement('div');
+    el.className = `l${li}`;
+    note.appendChild(el);
+    return el;
+  });
+  typedShown = '';
+  return Math.min(NOTE_MAX, fit(Math.max(...LAYOUT.map(([text]) => text.length))));
+}
 
 function message(t) {
   let left = (t - T_MSG) * TYPE_SPEED;
-  const counts = MESSAGE.map((line, li) => {
-    if (li > 0) left -= LINE_PAUSE * TYPE_SPEED;
-    const n = Math.max(0, Math.min(line.length, Math.floor(left)));
-    left -= line.length;
+  const counts = LAYOUT.map(([text, li], k) => {
+    if (k > 0) left -= (li !== LAYOUT[k - 1][1] ? LINE_PAUSE : BREAK_PAUSE) * TYPE_SPEED;
+    const n = Math.max(0, Math.min(text.length, Math.floor(left)));
+    left -= text.length;
     return n;
   });
   const key = counts.join(',');
-  if (key !== typedShown) {
-    typedShown = key;
-    MESSAGE.forEach((line, li) => {
-      const text = line.toUpperCase(), n = counts[li];
-      const shown = text.slice(0, n).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/&lt;3/g, '<span class="heart">&lt;3</span>');
-      const rest = text.slice(n).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      NOTE_LINES[li].innerHTML = `${shown}<span class="rest">${rest}</span>`;
-    });
-  }
+  if (key === typedShown) return;
+  typedShown = key;
+  LAYOUT.forEach(([line], k) => {
+    const text = line.toUpperCase(), n = counts[k];
+    const shown = text.slice(0, n).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/&lt;3/g, '<span class="heart">&lt;3</span>');
+    const rest = text.slice(n).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    NOTE_LINES[k].innerHTML = `${shown}<span class="rest">${rest}</span>`;
+  });
 }
 
 // ── i petali che cadono ────────────────────────────────────────────────
@@ -603,20 +629,22 @@ function resize() {
   ctx.font = `700 20px ${MONO}`;
   const ratio = ctx.measureText('M'.repeat(40)).width / 40 / 20;
   // il mazzo, il biglietto e subito sotto il pulsante per rivederlo: devono starci tutti, senza toccarsi
-  const longest = Math.max(...MESSAGE.map((m) => m.length));
-  const msgSize = Math.min(20, Math.max(10, (W * 0.82) / (longest * ratio * 1.75)));
-  const below = msgSize * 2 * MESSAGE.length + 64;
+  const msgSize = layoutNote(W, ratio);
+  const noteH = msgSize * NOTE_LINE_H * LAYOUT.length, btnSize = Math.max(14, msgSize * 0.72);
+  const below = noteH + btnSize * 1.6 + 48;
   S = Math.max(60, Math.min(W * 0.38, (H * 0.94 - below) / 2.75));
   const top = Math.max(H * 0.03, (H - 2.75 * S - below) * 0.45);
   const size = Math.max(5, S / 40 / ratio);
   cellW = size * ratio; cellH = size * 1.08;
   cols = Math.ceil(W / cellW); rows = Math.ceil(H / cellH);
   OX = W / 2; OY = top + 1.55 * S;
+  const spacing = msgSize * ratio * 0.5;
   note.style.fontSize = `${msgSize}px`;
-  note.style.letterSpacing = `${msgSize * ratio * 0.75}px`;
+  note.style.letterSpacing = `${spacing}px`;
+  note.style.paddingLeft = `${spacing}px`;                 // la spaziatura dopo l'ultima lettera, compensata
   note.style.top = `${OY + 1.17 * S}px`;
-  again.style.top = `${OY + 1.17 * S + msgSize * 2 * MESSAGE.length + 4}px`;
-  again.style.fontSize = `${Math.max(13, msgSize * 0.8)}px`;
+  again.style.top = `${OY + 1.17 * S + noteH + 6}px`;
+  again.style.fontSize = `${btnSize}px`;
   zbuf = new Float32Array(cols * rows); gbuf = new Uint8Array(cols * rows); cbuf = new Uint8Array(cols * rows);
   colX = Int32Array.from({ length: cols }, (_, c) => Math.round(c * cellW * dpr));
   rowY = Int32Array.from({ length: rows }, (_, r) => Math.round(r * cellH * dpr));
