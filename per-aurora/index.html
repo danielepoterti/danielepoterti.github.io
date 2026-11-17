@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: #000; color: var(--fg); overflow: hidden; overscroll-behavior: none; }
   body { font-family: var(--mono); -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
-  #app { position: fixed; inset: 0; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+  #app { position: fixed; top: 0; right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; }
   #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; touch-action: manipulation; }
   #grid { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   #glow { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; opacity: .55; filter: blur(5px) saturate(1.3); }
@@ -27,18 +27,15 @@
   #note .l1 { color: #f2c94c; text-shadow: 0 0 10px rgba(242,201,76,.55); }
   #note .heart { color: #ff4d6d; text-shadow: 0 0 10px rgba(255,77,109,.8); }
   #note .rest { visibility: hidden; }
-  #note i { display: inline-block; position: relative; width: 0; height: 1em; vertical-align: -0.12em; }
-  #note i::after { content: ''; position: absolute; left: .08em; top: 0; width: .55em; height: 1em; background: #f4f4f5; box-shadow: 0 0 8px rgba(244,244,245,.6); }
-  #note i.blink::after { animation: caret 1.1s steps(1) infinite; }
-  @keyframes caret { 50% { opacity: 0; } }
   #again {
-    position: absolute; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-    min-height: 40px; padding: 0 18px;
-    font: 12px var(--mono); color: var(--fg); background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.16); border-radius: 999px; cursor: pointer;
-    opacity: 0; transition: opacity .8s; pointer-events: none;
+    position: absolute; left: 50%; transform: translateX(-50%); padding: 12px 14px;
+    font-family: var(--mono); font-weight: 700; letter-spacing: .35em; white-space: pre;
+    color: #ff8fa3; text-shadow: 0 0 10px rgba(255,77,109,.7);
+    background: none; border: 0; cursor: pointer; -webkit-appearance: none; appearance: none;
+    opacity: 0; transition: opacity 1.2s, color .2s; pointer-events: none;
   }
   #again.show { opacity: 1; pointer-events: auto; }
+  #again:hover, #again:active { color: #fff; }
 </style>
 </head>
 <body>
@@ -47,7 +44,7 @@
     <canvas id="grid" role="img" aria-label="Un mazzo di rose fatto di lettere che sboccia, con un biglietto: per te, Aurora. Buona laurea, dottoressa."></canvas>
     <canvas id="glow"></canvas>
     <div id="note" aria-hidden="true"></div>
-    <button id="again" type="button">↻ rivedi</button>
+    <button id="again" type="button">[ RIVEDI ]</button>
   </section>
 </div>
 <script>
@@ -549,19 +546,15 @@ function message(t) {
     left -= line.length;
     return n;
   });
-  const done = left >= 0;
-  let at = done ? MESSAGE.length - 1 : counts.findIndex((n, i) => n < MESSAGE[i].length);
-  if (at > 0 && counts[at] === 0) at--;               // nella pausa tra le righe, il cursore aspetta in fondo
-  const key = counts.join(',') + (done ? '.' : '') + (t >= T_MSG ? '|' : '');
+  const key = counts.join(',');
   if (key !== typedShown) {
     typedShown = key;
     MESSAGE.forEach((line, li) => {
       const text = line.toUpperCase(), n = counts[li];
       const shown = text.slice(0, n).replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/&lt;3/g, '<span class="heart">&lt;3</span>');
-      const cursor = li === at && t >= T_MSG ? `<i class="${done ? 'blink' : ''}"></i>` : '';
       const rest = text.slice(n).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      NOTE_LINES[li].innerHTML = `${shown}${cursor}<span class="rest">${rest}</span>`;
+      NOTE_LINES[li].innerHTML = `${shown}<span class="rest">${rest}</span>`;
     });
   }
 }
@@ -609,12 +602,12 @@ function resize() {
   canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   ctx.font = `700 20px ${MONO}`;
   const ratio = ctx.measureText('M'.repeat(40)).width / 40 / 20;
-  // il mazzo, il biglietto e (sotto) il pulsante per rivederlo devono starci tutti, senza toccarsi
+  // il mazzo, il biglietto e subito sotto il pulsante per rivederlo: devono starci tutti, senza toccarsi
   const longest = Math.max(...MESSAGE.map((m) => m.length));
   const msgSize = Math.min(20, Math.max(10, (W * 0.82) / (longest * ratio * 1.75)));
-  const hudH = 64, block = (h) => 2.75 * h + msgSize * 4.2;
-  S = Math.max(60, Math.min(W * 0.38, (H * 0.95 - hudH - msgSize * 4.2) / 2.75));
-  const top = Math.max(H * 0.03, (H - hudH - block(S)) * 0.45);
+  const below = msgSize * 2 * MESSAGE.length + 64;
+  S = Math.max(60, Math.min(W * 0.38, (H * 0.94 - below) / 2.75));
+  const top = Math.max(H * 0.03, (H - 2.75 * S - below) * 0.45);
   const size = Math.max(5, S / 40 / ratio);
   cellW = size * ratio; cellH = size * 1.08;
   cols = Math.ceil(W / cellW); rows = Math.ceil(H / cellH);
@@ -622,6 +615,8 @@ function resize() {
   note.style.fontSize = `${msgSize}px`;
   note.style.letterSpacing = `${msgSize * ratio * 0.75}px`;
   note.style.top = `${OY + 1.17 * S}px`;
+  again.style.top = `${OY + 1.17 * S + msgSize * 2 * MESSAGE.length + 4}px`;
+  again.style.fontSize = `${Math.max(13, msgSize * 0.8)}px`;
   zbuf = new Float32Array(cols * rows); gbuf = new Uint8Array(cols * rows); cbuf = new Uint8Array(cols * rows);
   colX = Int32Array.from({ length: cols }, (_, c) => Math.round(c * cellW * dpr));
   rowY = Int32Array.from({ length: rows }, (_, r) => Math.round(r * cellH * dpr));
@@ -682,7 +677,9 @@ const frozen = query.has('t');
 let t = frozen ? parseFloat(query.get('t')) || 0 : 0, last = performance.now(), drawn = 0;
 again.addEventListener('click', () => { t = 0; });
 let resizing = 0;
-window.addEventListener('resize', () => { clearTimeout(resizing); resizing = setTimeout(resize, 120); });
+const onResize = () => { clearTimeout(resizing); resizing = setTimeout(resize, 120); };
+window.addEventListener('resize', onResize);
+if (window.visualViewport) visualViewport.addEventListener('resize', onResize);
 resize();
 
 function frame(now) {
