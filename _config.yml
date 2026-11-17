@@ -281,7 +281,7 @@ defaults:
       share: true
   # unlisted page: keep it out of sitemap.xml
   - scope:
-      path: "per-aurora-1dc1186f"
+      path: "per-aurora"
     values:
       sitemap: false
 
